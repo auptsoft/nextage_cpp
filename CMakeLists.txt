@@ -3,6 +3,7 @@ project(nextage_api_cpp CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(EXPORT_COMPILE_COMMANDS ON)
 
 # --- vcpkg packages ---
 find_package(nlohmann_json CONFIG REQUIRED)

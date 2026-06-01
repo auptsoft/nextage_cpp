@@ -49,19 +49,19 @@ CorbaClient::~CorbaClient() {
 // ---- Private helper implementations ----
 
 CORBA::Any CorbaClient::ctrl_execute(const std::wstring& cmd, const CORBA::Any& arg) {
-    return controller_->Execute(cmd.c_str(), arg);
+    return CORBA::Any_var(controller_->Execute(cmd.c_str(), arg)).in();
 }
 
 CORBA::Any CorbaClient::obj_execute(const std::wstring& type, const std::wstring& name,
                                      const std::wstring& cmd, const CORBA::Any& arg) {
     NxApi::NxObject_var obj = controller_->GetNxObject(type.c_str(), name.c_str());
-    return obj->Execute(cmd.c_str(), arg);
+    return CORBA::Any_var(obj->Execute(cmd.c_str(), arg)).in();
 }
 
 CORBA::Any CorbaClient::var_execute(const std::wstring& varName,
                                      const std::wstring& cmd, const CORBA::Any& arg) {
     NxApi::NxObject_var var = controller_->GetVariable(varName.c_str(), L"");
-    return var->Execute(cmd.c_str(), arg);
+    return CORBA::Any_var(var->Execute(cmd.c_str(), arg)).in();
 }
 
 CORBA::Any CorbaClient::subobj_var_execute(const std::wstring& objType, const std::wstring& objName,
@@ -69,7 +69,7 @@ CORBA::Any CorbaClient::subobj_var_execute(const std::wstring& objType, const st
                                             const std::wstring& cmd, const CORBA::Any& arg) {
     NxApi::NxObject_var obj = controller_->GetNxObject(objType.c_str(), objName.c_str());
     NxApi::NxObject_var var = obj->GetVariable(varName.c_str(), L"");
-    return var->Execute(cmd.c_str(), arg);
+    return CORBA::Any_var(var->Execute(cmd.c_str(), arg)).in();
 }
 
 SimpleResponse CorbaClient::simple_status(CORBA::Long status,
@@ -145,7 +145,7 @@ ControllerVarResponse CorbaClient::getControllerVariables() {
         L"@TOTAL_OPERATING_TIME @CONNECT_STATUS @PLUGIN_LIST @IF_VERSION @SYSTEM_VERSION";
 
     NxApi::NxObject_var vars = controller_->GetVariable(names.c_str(), L"");
-    CORBA::Any result = vars->Execute(L"GetValues", AnyHelper::make_null());
+    CORBA::Any result = CORBA::Any_var(vars->Execute(L"GetValues", AnyHelper::make_null())).in();
     auto v = AnyHelper::extract_seq(result);
 
     std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
@@ -182,7 +182,7 @@ RobotVariableResponse CorbaClient::getRobotVariables() {
 
     NxApi::NxObject_var robot = controller_->GetNxObject(L"Robot", L"All");
     NxApi::NxObject_var vars  = robot->GetVariable(names.c_str(), L"");
-    CORBA::Any result = vars->Execute(L"GetValues", AnyHelper::make_null());
+    CORBA::Any result = CORBA::Any_var(vars->Execute(L"GetValues", AnyHelper::make_null())).in();
     auto v = AnyHelper::extract_seq(result);
 
     return {
@@ -208,7 +208,7 @@ VisionVariableResponse CorbaClient::getVisionVariables() {
 
     NxApi::NxObject_var vision = controller_->GetNxObject(L"Vision", L"");
     NxApi::NxObject_var vars   = vision->GetVariable(names.c_str(), L"");
-    CORBA::Any result = vars->Execute(L"GetValues", AnyHelper::make_null());
+    CORBA::Any result = CORBA::Any_var(vars->Execute(L"GetValues", AnyHelper::make_null())).in();
     auto v = AnyHelper::extract_seq(result);
 
     return {
@@ -229,7 +229,7 @@ TaskVariableResponse CorbaClient::getTaskVariables() {
 
     NxApi::NxObject_var task = controller_->GetNxObject(L"Task", L"");
     NxApi::NxObject_var vars = task->GetVariable(names.c_str(), L"");
-    CORBA::Any result = vars->Execute(L"GetValues", AnyHelper::make_null());
+    CORBA::Any result = CORBA::Any_var(vars->Execute(L"GetValues", AnyHelper::make_null())).in();
     auto v = AnyHelper::extract_seq(result);
 
     return {
@@ -450,14 +450,14 @@ GrabbedImageData CorbaClient::grabImage(const GrabImageRequest& req) {
         {"distortionCorrect", AnyHelper::from_bool(req.distortionCorrect)},
         {"format",            AnyHelper::from_long(req.format)}
     };
-    vision->Execute(L"GrabImage", AnyHelper::make_params(grab_params));
+    delete vision->Execute(L"GrabImage", AnyHelper::make_params(grab_params));
 
     std::vector<std::pair<std::string, CORBA::Any>> get_params = {
         {"cameraNo",          AnyHelper::from_long(req.cameraNumber)},
         {"distortionCorrect", AnyHelper::from_bool(req.distortionCorrect)},
         {"format",            AnyHelper::from_long(req.format)}
     };
-    CORBA::Any result = vision->Execute(L"GetGrabbedImage", AnyHelper::make_params(get_params));
+    CORBA::Any result = CORBA::Any_var(vision->Execute(L"GetGrabbedImage", AnyHelper::make_params(get_params))).in();
     auto v = AnyHelper::extract_seq(result);
 
     // v[0]=status, v[1]=image bytes, v[2]=imageSize, v[3]=cameraAttributes, v[4]=imagingTime

@@ -13,7 +13,7 @@
 // or nlohmann::json for complex / opaque types.
 
 #include <omniORB4/CORBA.h>
-#include <omniORB4/dynamic.h>
+#include <omniORB4/dynAny.h>
 #include <string>
 #include <vector>
 #include <utility>

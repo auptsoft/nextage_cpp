@@ -1,7 +1,10 @@
 #include "any_helper.hpp"
 #include <omniORB4/CORBA.h>
-#include <omniORB4/dynamic.h>
+#include <omniORB4/dynAny.h>
+#include <omniORB4/omniORB.h>
 #include <stdexcept>
+
+using namespace DynamicAny;
 #include <codecvt>
 #include <locale>
 
@@ -55,20 +58,20 @@ CORBA::Any from_string(const std::string& s) {
 
 CORBA::Any from_long_seq(const std::vector<int>& v) {
     // Build sequence<long> using DynAny
-    CORBA::ORB_var orb = CORBA::ORB_instance("omniORB4");
-    CORBA::DynAnyFactory_var factory = CORBA::DynAnyFactory::_narrow(
+    int _argc = 0; CORBA::ORB_var orb = CORBA::ORB_init(_argc, nullptr);
+    DynAnyFactory_var factory = DynAnyFactory::_narrow(
         orb->resolve_initial_references("DynAnyFactory"));
 
     // TypeCode for sequence<long>
     CORBA::TypeCode_var tc_long = CORBA::TypeCode::_duplicate(CORBA::_tc_long);
     CORBA::TypeCode_var tc_seq  = orb->create_sequence_tc(0, tc_long);
 
-    CORBA::DynAny_var dyn = factory->create_dyn_any_from_type_code(tc_seq);
-    CORBA::DynSequence_var dynseq = CORBA::DynSequence::_narrow(dyn);
+    DynAny_var dyn = factory->create_dyn_any_from_type_code(tc_seq);
+    DynSequence_var dynseq = DynSequence::_narrow(dyn);
     dynseq->set_length(static_cast<CORBA::ULong>(v.size()));
 
     for (size_t i = 0; i < v.size(); ++i) {
-        CORBA::DynAny_var elem = dynseq->current_component();
+        DynAny_var elem = dynseq->current_component();
         elem->insert_long(static_cast<CORBA::Long>(v[i]));
         if (i + 1 < v.size()) dynseq->next();
     }
@@ -81,19 +84,19 @@ CORBA::Any from_long_seq(const std::vector<int>& v) {
 }
 
 CORBA::Any from_double_seq(const std::vector<double>& v) {
-    CORBA::ORB_var orb = CORBA::ORB_instance("omniORB4");
-    CORBA::DynAnyFactory_var factory = CORBA::DynAnyFactory::_narrow(
+    int _argc = 0; CORBA::ORB_var orb = CORBA::ORB_init(_argc, nullptr);
+    DynAnyFactory_var factory = DynAnyFactory::_narrow(
         orb->resolve_initial_references("DynAnyFactory"));
 
     CORBA::TypeCode_var tc_dbl = CORBA::TypeCode::_duplicate(CORBA::_tc_double);
     CORBA::TypeCode_var tc_seq = orb->create_sequence_tc(0, tc_dbl);
 
-    CORBA::DynAny_var dyn = factory->create_dyn_any_from_type_code(tc_seq);
-    CORBA::DynSequence_var dynseq = CORBA::DynSequence::_narrow(dyn);
+    DynAny_var dyn = factory->create_dyn_any_from_type_code(tc_seq);
+    DynSequence_var dynseq = DynSequence::_narrow(dyn);
     dynseq->set_length(static_cast<CORBA::ULong>(v.size()));
 
     for (size_t i = 0; i < v.size(); ++i) {
-        CORBA::DynAny_var elem = dynseq->current_component();
+        DynAny_var elem = dynseq->current_component();
         elem->insert_double(v[i]);
         if (i + 1 < v.size()) dynseq->next();
     }
@@ -107,19 +110,19 @@ CORBA::Any from_double_seq(const std::vector<double>& v) {
 
 // ---- Build a sequence<any> from a vector of Any values ----
 static CORBA::Any make_any_seq(const std::vector<CORBA::Any>& elems) {
-    CORBA::ORB_var orb = CORBA::ORB_instance("omniORB4");
-    CORBA::DynAnyFactory_var factory = CORBA::DynAnyFactory::_narrow(
+    int _argc = 0; CORBA::ORB_var orb = CORBA::ORB_init(_argc, nullptr);
+    DynAnyFactory_var factory = DynAnyFactory::_narrow(
         orb->resolve_initial_references("DynAnyFactory"));
 
     CORBA::TypeCode_var tc_any = CORBA::TypeCode::_duplicate(CORBA::_tc_any);
     CORBA::TypeCode_var tc_seq = orb->create_sequence_tc(0, tc_any);
 
-    CORBA::DynAny_var dyn = factory->create_dyn_any_from_type_code(tc_seq);
-    CORBA::DynSequence_var dynseq = CORBA::DynSequence::_narrow(dyn);
+    DynAny_var dyn = factory->create_dyn_any_from_type_code(tc_seq);
+    DynSequence_var dynseq = DynSequence::_narrow(dyn);
     dynseq->set_length(static_cast<CORBA::ULong>(elems.size()));
 
     for (size_t i = 0; i < elems.size(); ++i) {
-        CORBA::DynAny_var elem = dynseq->current_component();
+        DynAny_var elem = dynseq->current_component();
         elem->insert_any(const_cast<CORBA::Any&>(elems[i]));
         if (i + 1 < elems.size()) dynseq->next();
     }
@@ -193,12 +196,12 @@ std::wstring extract_wstring(const CORBA::Any& a) {
 }
 
 std::vector<CORBA::Any> extract_seq(const CORBA::Any& a) {
-    CORBA::ORB_var orb = CORBA::ORB_instance("omniORB4");
-    CORBA::DynAnyFactory_var factory = CORBA::DynAnyFactory::_narrow(
+    int _argc = 0; CORBA::ORB_var orb = CORBA::ORB_init(_argc, nullptr);
+    DynAnyFactory_var factory = DynAnyFactory::_narrow(
         orb->resolve_initial_references("DynAnyFactory"));
 
-    CORBA::DynAny_var dyn = factory->create_dyn_any(a);
-    CORBA::DynSequence_var dynseq = CORBA::DynSequence::_narrow(dyn);
+    DynAny_var dyn = factory->create_dyn_any(a);
+    DynSequence_var dynseq = DynSequence::_narrow(dyn);
 
     std::vector<CORBA::Any> result;
     if (CORBA::is_nil(dynseq)) {
@@ -210,7 +213,7 @@ std::vector<CORBA::Any> extract_seq(const CORBA::Any& a) {
     result.reserve(len);
 
     for (CORBA::ULong i = 0; i < len; ++i) {
-        CORBA::DynAny_var elem = dynseq->current_component();
+        DynAny_var elem = dynseq->current_component();
         CORBA::Any* ea = elem->to_any();
         result.push_back(*ea);
         delete ea;
@@ -276,17 +279,17 @@ nlohmann::json to_json(const CORBA::Any& a) {
 
     // Struct — recurse via DynAny
     if (tc->kind() == CORBA::tk_struct) {
-        CORBA::ORB_var orb = CORBA::ORB_instance("omniORB4");
-        CORBA::DynAnyFactory_var factory = CORBA::DynAnyFactory::_narrow(
+        int _argc = 0; CORBA::ORB_var orb = CORBA::ORB_init(_argc, nullptr);
+        DynAnyFactory_var factory = DynAnyFactory::_narrow(
             orb->resolve_initial_references("DynAnyFactory"));
-        CORBA::DynAny_var dyn = factory->create_dyn_any(a);
-        CORBA::DynStruct_var ds = CORBA::DynStruct::_narrow(dyn);
+        DynAny_var dyn = factory->create_dyn_any(a);
+        DynStruct_var ds = DynStruct::_narrow(dyn);
 
         nlohmann::json obj = nlohmann::json::object();
         CORBA::ULong n = tc->member_count();
         for (CORBA::ULong i = 0; i < n; ++i) {
             const char* name = tc->member_name(i);
-            CORBA::DynAny_var mem = ds->current_component();
+            DynAny_var mem = ds->current_component();
             CORBA::Any* ma = mem->to_any();
             obj[name] = to_json(*ma);
             delete ma;
