@@ -1,0 +1,6 @@
+build/
+generated/
+grabbed_images/
+.vscode/
+*.o
+*.a

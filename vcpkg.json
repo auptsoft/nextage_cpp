@@ -1,0 +1,11 @@
+{
+  "name": "nextage-api-cpp",
+  "version": "1.0.0",
+  "dependencies": [
+    "nlohmann-json",
+    {
+      "name": "cpp-httplib",
+      "features": []
+    }
+  ]
+}

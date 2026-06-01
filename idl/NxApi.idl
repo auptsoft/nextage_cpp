@@ -1,0 +1,30 @@
+#ifndef __NX_API_IDL__
+#define __NX_API_IDL__
+
+module NxApi {
+	exception NX_API_EXCEPTION {
+		long ErrorCode;
+		wstring ErrorMessage;
+	};
+
+	interface NxObject {
+		readonly attribute wstring Name;
+		readonly attribute long Type;
+		readonly attribute wstring Help;
+		attribute any Id;
+		any GetVariableNames(in wstring option) raises (NX_API_EXCEPTION);
+		NxObject GetVariable(in wstring name, in wstring option) raises (NX_API_EXCEPTION);
+		any Execute(in wstring command, in any parameter) raises (NX_API_EXCEPTION);
+	};
+
+	interface NxController : NxObject {
+		any GetNxObjectNames(in wstring option) raises (NX_API_EXCEPTION);
+		NxObject GetNxObject(in wstring name, in wstring option) raises (NX_API_EXCEPTION);
+	};
+
+	interface RootNxController {
+		NxController GetNxController(in wstring name, in wstring option) raises (NX_API_EXCEPTION);
+	};
+};
+
+#endif
