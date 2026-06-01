@@ -1,0 +1,51 @@
+Package: vcpkg-cmake-config
+Version: 2024-05-23
+Architecture: arm64-osx
+Multi-Arch: same
+Abi: f40cc57e47a44fd3b0a92113acead212ffb7c4485208c59bc2862b42e840f294
+Status: install ok installed
+
+Package: vcpkg-cmake
+Version: 2024-04-23
+Architecture: arm64-osx
+Multi-Arch: same
+Abi: 28547a1fc1e91f3421996d67eff2277aa14895db5275e17ed84a91722b98213f
+Status: install ok installed
+
+Package: brotli
+Version: 1.2.0
+Depends: vcpkg-cmake, vcpkg-cmake-config
+Architecture: arm64-osx
+Multi-Arch: same
+Abi: b46b49d2de384b1470920ff4607e39815b9142b93ba582c970ef3fb686cfa57a
+Description: a generic-purpose lossless compression algorithm that compresses data using a combination of a modern variant of the LZ77 algorithm, Huffman coding and 2nd order context modeling.
+Status: install ok installed
+
+Package: cpp-httplib
+Version: 0.46.0
+Depends: vcpkg-cmake, vcpkg-cmake-config
+Architecture: arm64-osx
+Multi-Arch: same
+Abi: b0c7d8779b49532899869dd1c035fa1590f380c538b54a45d0b9b102658856c3
+Description: A single file C++11 header-only HTTP/HTTPS server and client library
+Default-Features: brotli
+Status: install ok installed
+
+Package: cpp-httplib
+Feature: brotli
+Depends: brotli
+Architecture: arm64-osx
+Multi-Arch: same
+Description: Enables brotli compression support using brotli
+Status: install ok installed
+
+Package: nlohmann-json
+Version: 3.12.0
+Port-Version: 2
+Depends: vcpkg-cmake, vcpkg-cmake-config
+Architecture: arm64-osx
+Multi-Arch: same
+Abi: 16ba46461c28b82c21b701b629385594fae776d49ad630c65b5a0f0e988f8bc7
+Description: JSON for Modern C++
+Status: install ok installed
+

@@ -1,0 +1,47 @@
+Detecting compiler hash for triplet arm64-osx...
+Compiler found: /usr/bin/c++
+The following packages will be built and installed:
+  * brotli:arm64-osx@1.2.0
+    cpp-httplib[brotli,core]:arm64-osx@0.46.0
+    nlohmann-json:arm64-osx@3.12.0#2
+  * vcpkg-cmake:arm64-osx@2024-04-23
+  * vcpkg-cmake-config:arm64-osx@2024-05-23
+Additional packages (*) will be modified to complete this operation.
+Restored 5 package(s) from /Users/andrewoshodin/.cache/vcpkg/archives in 44.9 ms. Use --debug to see more details.
+Installing 1/5 vcpkg-cmake-config:arm64-osx@2024-05-23...
+vcpkg-cmake-config:arm64-osx@2024-05-23 package ABI: f40cc57e47a44fd3b0a92113acead212ffb7c4485208c59bc2862b42e840f294
+Elapsed time to handle vcpkg-cmake-config:arm64-osx: 1.87 ms
+Installing 2/5 vcpkg-cmake:arm64-osx@2024-04-23...
+vcpkg-cmake:arm64-osx@2024-04-23 package ABI: 28547a1fc1e91f3421996d67eff2277aa14895db5275e17ed84a91722b98213f
+Elapsed time to handle vcpkg-cmake:arm64-osx: 2.37 ms
+Installing 3/5 brotli:arm64-osx@1.2.0...
+brotli:arm64-osx@1.2.0 package ABI: b46b49d2de384b1470920ff4607e39815b9142b93ba582c970ef3fb686cfa57a
+Elapsed time to handle brotli:arm64-osx: 7.79 ms
+Installing 4/5 cpp-httplib[brotli,core]:arm64-osx@0.46.0...
+cpp-httplib[brotli,core]:arm64-osx@0.46.0 package ABI: b0c7d8779b49532899869dd1c035fa1590f380c538b54a45d0b9b102658856c3
+Elapsed time to handle cpp-httplib:arm64-osx: 3.54 ms
+Installing 5/5 nlohmann-json:arm64-osx@3.12.0#2...
+nlohmann-json:arm64-osx@3.12.0#2 package ABI: 16ba46461c28b82c21b701b629385594fae776d49ad630c65b5a0f0e988f8bc7
+Elapsed time to handle nlohmann-json:arm64-osx: 15.1 ms
+Installed contents are licensed to you by owners. Microsoft is not responsible for, nor does it grant any licenses to, third-party packages.
+Packages installed in this vcpkg installation declare the following licenses:
+MIT
+cpp-httplib provides CMake targets:
+
+    find_package(httplib CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE httplib::httplib)
+
+The package nlohmann-json provides CMake targets:
+
+    find_package(nlohmann_json CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE nlohmann_json::nlohmann_json)
+
+The package nlohmann-json can be configured to not provide implicit conversions via a custom triplet file:
+
+    set(nlohmann-json_IMPLICIT_CONVERSIONS OFF)
+
+For more information, see the docs here:
+    
+    https://json.nlohmann.me/api/macros/json_use_implicit_conversions/
+
+All requested installations completed successfully in: 31.6 ms

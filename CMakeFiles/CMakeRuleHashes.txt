@@ -1,0 +1,3 @@
+# Hashes of file build rules.
+27933b16fc100b5e39c8c4ee8c235ad0 /Users/andrewoshodin/work_greenedge/NextageAPI_Task_cpp/generated/NxApi.hh
+d6ddd122110dcf677cf7a0cd709bd3cf CMakeFiles/idl_stubs

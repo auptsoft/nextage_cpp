@@ -1,0 +1,8 @@
+/Users/andrewoshodin/work_greenedge/NextageAPI_Task_cpp/build/CMakeFiles/idl_stubs.dir
+/Users/andrewoshodin/work_greenedge/NextageAPI_Task_cpp/build/CMakeFiles/nextage_api.dir
+/Users/andrewoshodin/work_greenedge/NextageAPI_Task_cpp/build/CMakeFiles/edit_cache.dir
+/Users/andrewoshodin/work_greenedge/NextageAPI_Task_cpp/build/CMakeFiles/rebuild_cache.dir
+/Users/andrewoshodin/work_greenedge/NextageAPI_Task_cpp/build/CMakeFiles/list_install_components.dir
+/Users/andrewoshodin/work_greenedge/NextageAPI_Task_cpp/build/CMakeFiles/install.dir
+/Users/andrewoshodin/work_greenedge/NextageAPI_Task_cpp/build/CMakeFiles/install/local.dir
+/Users/andrewoshodin/work_greenedge/NextageAPI_Task_cpp/build/CMakeFiles/install/strip.dir
