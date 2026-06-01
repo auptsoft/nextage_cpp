@@ -14,7 +14,7 @@ static void print_usage(const char* prog) {
 int main(int argc, char* argv[]) {
     std::string host     = "0.0.0.0";
     int         port     = 8000;
-    std::string www_root = "../NextageAPI_Task/www";
+    std::string www_root = "../www";
 
     for (int i = 1; i < argc; ++i) {
         std::string arg = argv[i];

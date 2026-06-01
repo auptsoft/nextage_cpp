@@ -169,27 +169,39 @@ CORBA::Any make_single_var(const std::string& key, const CORBA::Any& value) {
 
 // ---- Extraction helpers ----
 
+// Peel off one layer of tk_any wrapping (robot packs values as Any-in-Any)
+static CORBA::Any unwrap(const CORBA::Any& a) {
+    CORBA::TypeCode_var tc = a.type();
+    if (tc->kind() == CORBA::tk_any) {
+        CORBA::Any inner;
+        if (a >>= inner) return inner;
+    }
+    return a;
+}
+
 CORBA::Long extract_long(const CORBA::Any& a) {
+    const CORBA::Any u = unwrap(a);
     CORBA::Long v = 0;
-    if (!(a >>= v)) {
-        // Try ULong fallback
+    if (!(u >>= v)) {
         CORBA::ULong uv = 0;
-        if (a >>= uv) return static_cast<CORBA::Long>(uv);
+        if (u >>= uv) return static_cast<CORBA::Long>(uv);
     }
     return v;
 }
 
 CORBA::Boolean extract_bool(const CORBA::Any& a) {
+    const CORBA::Any u = unwrap(a);
     CORBA::Boolean v = false;
     CORBA::Any::to_boolean tb(v);
-    a >>= tb;
+    u >>= tb;
     return v;
 }
 
 std::wstring extract_wstring(const CORBA::Any& a) {
+    const CORBA::Any u = unwrap(a);
     CORBA::WChar* ws = nullptr;
     CORBA::Any::to_wstring tw(ws, 0);
-    if (a >>= tw) {
+    if (u >>= tw) {
         return std::wstring(ws);
     }
     return L"";
@@ -226,45 +238,46 @@ std::vector<CORBA::Any> extract_seq(const CORBA::Any& a) {
 
 // ---- Recursive Any → nlohmann::json ----
 nlohmann::json to_json(const CORBA::Any& a) {
+    const CORBA::Any u = unwrap(a);
     // Try primitives first
     {
         CORBA::Long v;
-        if (a >>= v) return nlohmann::json(v);
+        if (u >>= v) return nlohmann::json(v);
     }
     {
         CORBA::ULong v;
-        if (a >>= v) return nlohmann::json(v);
+        if (u >>= v) return nlohmann::json(v);
     }
     {
         CORBA::LongLong v;
-        if (a >>= v) return nlohmann::json(v);
+        if (u >>= v) return nlohmann::json(v);
     }
     {
         CORBA::Double v;
-        if (a >>= v) return nlohmann::json(v);
+        if (u >>= v) return nlohmann::json(v);
     }
     {
         CORBA::Boolean v = false;
         CORBA::Any::to_boolean tb(v);
-        if (a >>= tb) return nlohmann::json(static_cast<bool>(v));
+        if (u >>= tb) return nlohmann::json(static_cast<bool>(v));
     }
     {
         CORBA::WChar* ws = nullptr;
         CORBA::Any::to_wstring tw(ws, 0);
-        if (a >>= tw) {
+        if (u >>= tw) {
             std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
             return nlohmann::json(conv.to_bytes(ws));
         }
     }
     {
         const char* s = nullptr;
-        if (a >>= s) return nlohmann::json(std::string(s));
+        if (u >>= s) return nlohmann::json(std::string(s));
     }
 
     // Try sequence
-    CORBA::TypeCode_var tc = a.type();
+    CORBA::TypeCode_var tc = u.type();
     if (tc->kind() == CORBA::tk_sequence || tc->kind() == CORBA::tk_array) {
-        auto elems = extract_seq(a);
+        auto elems = extract_seq(u);
         nlohmann::json arr = nlohmann::json::array();
         for (const auto& e : elems) {
             arr.push_back(to_json(e));
@@ -282,7 +295,7 @@ nlohmann::json to_json(const CORBA::Any& a) {
         int _argc = 0; CORBA::ORB_var orb = CORBA::ORB_init(_argc, nullptr);
         DynAnyFactory_var factory = DynAnyFactory::_narrow(
             orb->resolve_initial_references("DynAnyFactory"));
-        DynAny_var dyn = factory->create_dyn_any(a);
+        DynAny_var dyn = factory->create_dyn_any(u);
         DynStruct_var ds = DynStruct::_narrow(dyn);
 
         nlohmann::json obj = nlohmann::json::object();

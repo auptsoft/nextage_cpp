@@ -8,6 +8,7 @@
 #include <codecvt>
 #include <locale>
 #include <nlohmann/json.hpp>
+#include <iostream>
 
 // ---- Narrow string → wide string ----
 static std::wstring ws(const std::string& s) {
@@ -148,6 +149,7 @@ ControllerVarResponse CorbaClient::getControllerVariables() {
     CORBA::Any result = CORBA::Any_var(vars->Execute(L"GetValues", AnyHelper::make_null())).in();
     auto v = AnyHelper::extract_seq(result);
 
+
     std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
     ControllerVarResponse r;
     r.id               = conv.to_bytes(AnyHelper::extract_wstring(v[0]));
@@ -186,7 +188,8 @@ RobotVariableResponse CorbaClient::getRobotVariables() {
     auto v = AnyHelper::extract_seq(result);
 
     return {
-        static_cast<int>(AnyHelper::extract_long(v[0])),
+        // static_cast<int>(AnyHelper::extract_long(v[0])),
+        AnyHelper::extract_bool(v[0]),
         AnyHelper::to_json(v[1]),
         AnyHelper::to_json(v[2]),
         AnyHelper::to_json(v[3]),

@@ -4,6 +4,7 @@
 #include <fstream>
 #include <filesystem>
 #include <stdexcept>
+#include <iostream>
 
 // ---- Constructor ----
 
@@ -59,11 +60,15 @@ void ApiServer::register_routes() {
     // ------------------------------------------------------------------ //
 
     svr_.Post("/api/connect", [this](const httplib::Request& req, httplib::Response& res) {
+
+
         add_cors(res);
+        
         safe_handle(res, [&] {
-            ConnectRequest cr;
-            if (!parse_body(req, res, cr)) return;
-            service_.connect(cr.ip_address, cr.port);
+            std::string ip = req.get_param_value("ip_address");
+            int port = req.has_param("port") ? std::stoi(req.get_param_value("port")) : 2809;
+            std::cout << "Connecting. \n";
+            service_.connect(ip, port);
             res.set_content("{\"message\":\"Connected successfully.\",\"isSuccessful\":true}", "application/json");
         });
     });
@@ -131,8 +136,9 @@ void ApiServer::register_routes() {
         add_cors(res);
         safe_handle(res, [&] {
             SetSpeedRequest r;
-            if (!parse_body(req, res, r)) return;
-            json_response(res, service_.setSpeed(r.value));
+            int speed = req.has_param("value") ? std::stoi(req.get_param_value("value")) : 20;
+            // if (!parse_body(req, res, r)) return;
+            json_response(res, service_.setSpeed(speed));
         });
     });
 
@@ -379,6 +385,12 @@ void ApiServer::register_routes() {
 
     // SPA fallback: any unmatched GET returns index.html
     svr_.set_error_handler([this](const httplib::Request& req, httplib::Response& res) {
+        // API paths must never receive HTML — preserve JSON error or return 404
+        if (req.path.rfind("/api", 0) == 0) {
+            if (res.body.empty())
+                res.set_content("{\"error\":\"Not found\"}", "application/json");
+            return;
+        }
         if (req.method == "GET" && !www_root_.empty()) {
             std::string index = www_root_ + "/index.html";
             std::ifstream f(index, std::ios::binary);
