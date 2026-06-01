@@ -1,4 +1,13 @@
 #pragma once
+
+#ifdef __APPLE__
+// MacTypes.h defines 'nil' as 'nullptr', which corrupts the parameter name in
+// omniORB's poa.h. Pre-including MacTypes.h exhausts its include guard so
+// CORBA.h's transitive include of it becomes a no-op; then undefine nil.
+#include <MacTypes.h>
+#undef nil
+#endif
+
 #include <omniORB4/CORBA.h>
 #include <string>
 #include <vector>
